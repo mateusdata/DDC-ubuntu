@@ -44,7 +44,22 @@ Para conferir se o monitor expõe os dois controles:
 ddcutil getvcp 10 12
 ```
 
-## Instalação a partir deste repositório
+## Instalação
+
+### Instalação rápida pelo pacote
+
+Baixe o arquivo `.zip` da versão desejada, abra o **Gerenciador de Extensões**
+e escolha **Instalar a partir de arquivo**. Se preferir o terminal, use:
+
+```bash
+gnome-extensions install --force ddcbrightnesscontrast.zip
+gnome-extensions enable ddcbrightnesscontrast@data.local
+```
+
+Depois abra o menu superior do GNOME: cada monitor terá os controles de
+**Brilho** e **Contraste**.
+
+### Instalação a partir deste repositório
 
 ```bash
 git clone https://github.com/mateusdata/DDC-ubuntu.git
@@ -53,21 +68,20 @@ pnpm install --frozen-lockfile
 pnpm run build
 ```
 
-Compile o esquema e copie a extensão:
+Compile o esquema, monte o pacote e instale:
 
 ```bash
 mkdir -p dist/schemas
 cp metadata.json stylesheet.css dist/
 cp schemas/org.gnome.shell.extensions.ddcbrightness.gschema.xml dist/schemas/
 glib-compile-schemas dist/schemas
-mkdir -p ~/.local/share/gnome-shell/extensions/ddcbrightnesscontrast@data.local
-cp -r dist/. ~/.local/share/gnome-shell/extensions/ddcbrightnesscontrast@data.local/
+(cd dist && zip -r ../ddcbrightnesscontrast.zip .)
+gnome-extensions install --force ddcbrightnesscontrast.zip
+gnome-extensions enable ddcbrightnesscontrast@data.local
 ```
 
-Abra o **Gerenciador de Extensões**, atualize a lista e ative **DDC Controle de
-Brilho e Contraste**. Para instalações locais feitas manualmente, o GNOME pode
-precisar de uma atualização da lista de extensões; isso não significa que o
-Linux inteiro precise ser reiniciado.
+Também é possível abrir o **Gerenciador de Extensões** e ativar **DDC Controle
+de Brilho e Contraste** por lá.
 
 ## Desenvolvimento
 
