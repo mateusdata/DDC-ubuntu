@@ -59,6 +59,25 @@ gnome-extensions enable ddcbrightnesscontrast@data.local
 Depois abra o menu superior do GNOME: cada monitor terá os controles de
 **Brilho** e **Contraste**.
 
+### Instalação pelo site do GNOME Extensions
+
+Quando a extensão estiver aprovada no site, o botão **Instalar** do navegador
+precisa de duas partes para funcionar no Ubuntu:
+
+1. Instale o conector nativo:
+
+   ```bash
+   sudo apt update
+   sudo apt install gnome-browser-connector
+   ```
+
+2. No Google Chrome, instale a extensão oficial
+   [GNOME Shell Integration](https://chromewebstore.google.com/detail/gnome-shell-integration/gphhapmejobijbbhgpjhcjognlahblep).
+
+Reabra o Chrome e atualize a página do GNOME Extensions. O aviso sobre o
+conector nativo deve desaparecer e o botão **Instalar** passará a abrir a
+confirmação do GNOME Shell.
+
 ### Instalação a partir deste repositório
 
 ```bash
