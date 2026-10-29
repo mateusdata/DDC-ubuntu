@@ -48,7 +48,7 @@ ddcutil getvcp 10 12
 
 ### Instalação rápida pelo pacote
 
-Baixe o arquivo `.zip` da versão desejada, abra o **Gerenciador de Extensões**
+Baixe o arquivo [ddcbrightnesscontrast.zip](./ddcbrightnesscontrast.zip), abra o **Gerenciador de Extensões**
 e escolha **Instalar a partir de arquivo**. Se preferir o terminal, use:
 
 ```bash
