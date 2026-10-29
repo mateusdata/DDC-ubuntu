@@ -17,6 +17,14 @@ export interface ControlInfo {
     updatingFromCode: boolean;
 }
 
+export interface ExtraDimmingInfo {
+    currentValue: number;
+    slider: Slider.Slider | null;
+    valueLabel: St.Label | null;
+    overlay: St.Widget | null;
+    updatingFromCode: boolean;
+}
+
 export interface DisplayInfo {
     bus: string;
     name: string;
@@ -24,10 +32,15 @@ export interface DisplayInfo {
     monitorIndex: number;
     brightness: ControlInfo;
     contrast: ControlInfo;
+    extraDimming: ExtraDimmingInfo;
 }
 
 function createControl(vcpCode: string): ControlInfo {
     return {vcpCode, currentValue: 50, slider: null, valueLabel: null, sentValue: 50, inFlight: false, reading: false, updatingFromCode: false};
+}
+
+function createExtraDimming(): ExtraDimmingInfo {
+    return {currentValue: 0, slider: null, valueLabel: null, overlay: null, updatingFromCode: false};
 }
 
 export class DisplayController {
@@ -45,11 +58,15 @@ export class DisplayController {
     get detectComplete(): boolean { return this._detectComplete; }
 
     reset(): void {
+        this._destroyOverlays();
         this._displays = [];
         this._detectComplete = false;
     }
 
-    cleanup(): void { this._disposed = true; }
+    cleanup(): void {
+        this._disposed = true;
+        this._destroyOverlays();
+    }
 
     detect(): void {
         Ddcutil.detectDisplays(parsed => {
@@ -58,6 +75,7 @@ export class DisplayController {
                 bus: p.bus, name: p.name, connector: p.connector, monitorIndex: -1,
                 brightness: createControl(BRIGHTNESS_VCP_CODE),
                 contrast: createControl(CONTRAST_VCP_CODE),
+                extraDimming: createExtraDimming(),
             }));
             this._detectComplete = true;
             console.debug(`${LOG_PREFIX} Found ${this._displays.length} displays`);
@@ -111,6 +129,21 @@ export class DisplayController {
         }
     }
 
+    /**
+     * Dims the rendered image for one display only. This is intentionally not
+     * tied to "Link displays" and never sends a DDC command to the monitor.
+     */
+    setExtraDimming(display: DisplayInfo, rawValue: number): void {
+        const value = Math.max(0, Math.min(100, rawValue));
+        const dimming = display.extraDimming;
+        dimming.currentValue = value;
+        dimming.updatingFromCode = true;
+        if (dimming.slider) dimming.slider.value = value / 100;
+        dimming.valueLabel?.set_text(`${value}%`);
+        dimming.updatingFromCode = false;
+        this._updateDimmingOverlay(display);
+    }
+
     private _updateControlUi(control: ControlInfo, value: number): void {
         control.updatingFromCode = true;
         if (control.slider) control.slider.value = value / 100;
@@ -140,5 +173,37 @@ export class DisplayController {
             control.currentValue = value;
             this._updateControlUi(control, value);
         });
+    }
+
+    private _updateDimmingOverlay(display: DisplayInfo): void {
+        const dimming = display.extraDimming;
+        if (dimming.currentValue === 0) {
+            dimming.overlay?.hide();
+            return;
+        }
+
+        if (!dimming.overlay) {
+            dimming.overlay = new St.Widget({
+                reactive: false,
+                visible: false,
+            });
+            global.stage.add_child(dimming.overlay);
+        }
+
+        const monitor = display.monitorIndex >= 0
+            ? display.monitorIndex
+            : global.display.get_primary_monitor();
+        const geometry = global.display.get_monitor_geometry(monitor);
+        dimming.overlay.set_position(geometry.x, geometry.y);
+        dimming.overlay.set_size(geometry.width, geometry.height);
+        dimming.overlay.set_style(`background-color: rgba(0, 0, 0, ${dimming.currentValue / 100});`);
+        dimming.overlay.show();
+    }
+
+    private _destroyOverlays(): void {
+        for (const display of this._displays) {
+            display.extraDimming.overlay?.destroy();
+            display.extraDimming.overlay = null;
+        }
     }
 }

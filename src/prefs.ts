@@ -38,6 +38,24 @@ export default class DDCCBrightnessPreferences extends ExtensionPreferences {
         });
         ddcGroup.add(linkDisplays);
 
+        const visibleControlsGroup = new Adw.PreferencesGroup({
+            title: _('Controles exibidos'),
+            description: _('Escolha quais controles aparecem no menu da extensão.'),
+        });
+        page.add(visibleControlsGroup);
+
+        const showContrast = new Adw.SwitchRow({
+            title: _('Mostrar contraste'),
+            subtitle: _('Exibe o controle de contraste para cada monitor'),
+        });
+        visibleControlsGroup.add(showContrast);
+
+        const showExtraDimming = new Adw.SwitchRow({
+            title: _('Mostrar escurecimento extra'),
+            subtitle: _('Escurece a imagem por software, sem alterar o brilho físico do monitor'),
+        });
+        visibleControlsGroup.add(showExtraDimming);
+
         const keybindingGroup = new Adw.PreferencesGroup({
             title: _('Keyboard Shortcuts'),
             description: _('Syntax: <Super>h, <Shift>g, <Super><Shift>h\nLegend: <Super> - Windows key, <Primary> - Control key\nDelete text to unset. Press Return key to accept.'),
@@ -62,6 +80,8 @@ export default class DDCCBrightnessPreferences extends ExtensionPreferences {
 
         settings.bind('step', step, 'value', Gio.SettingsBindFlags.DEFAULT);
         settings.bind('link-displays', linkDisplays, 'active', 0);
+        settings.bind('show-contrast', showContrast, 'active', Gio.SettingsBindFlags.DEFAULT);
+        settings.bind('show-extra-dimming', showExtraDimming, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         window.add(page);
         return Promise.resolve();

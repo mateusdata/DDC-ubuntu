@@ -23,6 +23,7 @@ export class BrightnessIndicator {
     private _settings: Gio.Settings;
     private _onRefresh: () => void;
     private _onOpenPrefs: () => void;
+    private _settingsChangedIds: number[] = [];
 
     constructor(params: IndicatorParams) {
         this._controller = params.controller;
@@ -38,6 +39,10 @@ export class BrightnessIndicator {
             styleClass: 'system-status-icon',
         });
         this._button.add_child(icon);
+
+        for (const key of ['show-contrast', 'show-extra-dimming']) {
+            this._settingsChangedIds.push(this._settings.connect(`changed::${key}`, () => this.rebuildMenu()));
+        }
 
         this.rebuildMenu();
     }
@@ -100,7 +105,12 @@ export class BrightnessIndicator {
         menu.addMenuItem(labelRow);
 
         this._buildControlSlider(menu, display, 'brightness', 'Brilho');
-        this._buildControlSlider(menu, display, 'contrast', 'Contraste');
+        if (this._settings.get_boolean('show-contrast')) {
+            this._buildControlSlider(menu, display, 'contrast', 'Contraste');
+        }
+        if (this._settings.get_boolean('show-extra-dimming')) {
+            this._buildExtraDimmingSlider(menu, display);
+        }
         menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
     }
 
@@ -138,7 +148,40 @@ export class BrightnessIndicator {
         });
     }
 
+    private _buildExtraDimmingSlider(menu: PopupMenu.PopupMenu, display: DisplayInfo): void {
+        const dimming = display.extraDimming;
+        const sliderRow = new PopupMenu.PopupBaseMenuItem({activate: false});
+        sliderRow.add_style_class_name('ddc-brightness-slider');
+
+        const title = new St.Label({
+            text: 'Escurecimento extra',
+            yAlign: Clutter.ActorAlign.CENTER,
+            style: 'min-width: 82px;',
+        });
+        const slider = new Slider.Slider(dimming.currentValue / 100);
+        const valueLabel = new St.Label({
+            text: `${dimming.currentValue}%`,
+            yAlign: Clutter.ActorAlign.CENTER,
+            style: 'min-width: 40px; text-align: right;',
+        });
+
+        sliderRow.add_child(title);
+        sliderRow.add_child(slider);
+        sliderRow.add_child(valueLabel);
+        menu.addMenuItem(sliderRow);
+
+        dimming.slider = slider;
+        dimming.valueLabel = valueLabel;
+
+        slider.connect('notify::value', () => {
+            if (dimming.updatingFromCode) return;
+            this._controller.setExtraDimming(display, Math.round(slider.value * 100));
+        });
+    }
+
     destroy(): void {
+        this._settingsChangedIds.forEach(id => this._settings.disconnect(id));
+        this._settingsChangedIds = [];
         this._button.destroy();
     }
 }

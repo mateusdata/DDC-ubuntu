@@ -11,6 +11,16 @@
             <summary>Link Displays</summary>
             <description>Link brightness of all displays so they move together.</description>
         </key>
+        <key name="show-contrast" type="b">
+            <default>true</default>
+            <summary>Show Contrast</summary>
+            <description>Show the contrast slider for each display.</description>
+        </key>
+        <key name="show-extra-dimming" type="b">
+            <default>false</default>
+            <summary>Show Extra Dimming</summary>
+            <description>Show the per-display software dimming slider.</description>
+        </key>
         <key name="brightness-up" type="as">
             <default><![CDATA[['<Alt><Shift>F2']]]></default>
             <summary>Increase Brightness</summary>
