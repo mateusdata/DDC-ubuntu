@@ -59,6 +59,12 @@ gnome-extensions enable ddcbrightnesscontrast@data.local
 Depois abra o menu superior do GNOME: cada monitor terá os controles de
 **Brilho** e **Contraste**.
 
+> **GNOME no Wayland:** ao instalar manualmente pelo ZIP ou a partir deste
+> projeto, uma extensão nova pode não aparecer na sessão atual imediatamente.
+> Nesse caso, faça **logout e login** para o GNOME recarregar a lista de
+> extensões. Isso não costuma ser necessário ao instalar uma extensão já
+> aprovada pela loja oficial do GNOME com o conector do navegador funcionando.
+
 ### Instalação pelo site do GNOME Extensions
 
 Quando a extensão estiver aprovada no site, o botão **Instalar** do navegador
