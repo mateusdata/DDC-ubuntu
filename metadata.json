@@ -1,0 +1,12 @@
+{
+  "name": "DDC Controle de Brilho e Contraste",
+  "description": "Controle o brilho e o contraste do monitor via DDC/CI usando ddcutil.",
+  "uuid": "ddcbrightnesscontrast@data.local",
+  "version": 1,
+  "url": "https://github.com/lucasoskorep/ddc-brightness-control",
+  "settings-schema": "org.gnome.shell.extensions.ddcbrightnesscontrast",
+  "shell-version": [
+    "50",
+    "51"
+  ]
+}

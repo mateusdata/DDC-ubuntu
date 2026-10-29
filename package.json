@@ -1,0 +1,31 @@
+{
+  "name": "ddc-brightness-contrast",
+  "version": "0.1.1",
+  "description": "Extensão GNOME para controlar brilho e contraste via DDC/CI usando ddcutil",
+  "type": "module",
+  "private": true,
+  "author": "Mateus Data",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist/*",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@girs/adw-1": "^5.5.0",
+    "@girs/clutter-51": "^5.5.0",
+    "@girs/gio-2.0": "^5.5.0",
+    "@girs/gjs": "^5.5.0",
+    "@girs/glib-2.0": "^5.5.0",
+    "@girs/gobject-2.0": "^5.5.0",
+    "@girs/gtk-4.0": "^5.5.0",
+    "@girs/meta-51": "^5.5.0",
+    "@girs/shell-51": "^5.5.0",
+    "@girs/st-51": "^5.5.0",
+    "eslint": "^10.12.0",
+    "eslint-plugin-jsdoc": "^65.3.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}
